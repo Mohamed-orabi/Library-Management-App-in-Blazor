@@ -1,0 +1,25 @@
+﻿@using LibraryManagementApp.Application.DTOs
+
+<div class="p-4 border rounded shadow-sm flex justify-between items-center bg-white">
+    <div>
+        <h3 class="text-lg font-semibold">@Book.Title</h3>
+        <p class="text-gray-600">ISBN: @Book.ISBN</p>
+        <p class="text-gray-600">Category: @Book.CategoryName</p>
+        <p class="text-sm text-gray-500">Published: @Book.PublicationDate.ToString("MMM dd, yyyy")</p>
+    </div>
+    <div class="flex gap-2">
+        <button @onclick="async () => await OnEdit.InvokeAsync(Book)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+        <button @onclick="async () => await OnDelete.InvokeAsync(Book.Id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public BookDto Book { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<BookDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+}

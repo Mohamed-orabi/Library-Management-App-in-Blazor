@@ -1,0 +1,69 @@
+﻿@page "/books"
+@using LibraryManagementApp.Application.DTOs
+@using LibraryManagementApp.Application.Interfaces
+@inject IBookService BookService
+@inject ICategoryService CategoryService
+@inject IAuthorService AuthorService
+@inject IJSRuntime JS
+
+<h1 class="text-3xl font-bold mb-6 text-center">Manage Books</h1>
+
+<!-- Book Form -->
+<EditForm Model="newBook" OnValidSubmit="AddOrUpdateBook" class="mb-8 max-w-md mx-auto">
+    <DataAnnotationsValidator />
+    <div class="mb-4">
+        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+        <InputText id="title" @bind-Value="newBook.Title" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter book title" />
+        <ValidationMessage For="() => newBook.Title" class="text-red-500 text-sm mt-1" />
+    </div>
+    <div class="mb-4">
+        <label for="isbn" class="block text-sm font-medium text-gray-700">ISBN</label>
+        <InputText id="isbn" @bind-Value="newBook.ISBN" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter ISBN" />
+        <ValidationMessage For="() => newBook.ISBN" class="text-red-500 text-sm mt-1" />
+    </div>
+    <div class="mb-4">
+        <label for="publicationDate" class="block text-sm font-medium text-gray-700">Publication Date</label>
+        <InputDate id="publicationDate" @bind-Value="newBook.PublicationDate" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div class="mb-4">
+        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+        <InputSelect id="category" @bind-Value="newBook.CategoryId" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="0">Select category</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="mb-4">
+        <label for="authors" class="block text-sm font-medium text-gray-700">Authors</label>
+        <InputSelect multiple @bind-Value="newBook.AuthorIds" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            @foreach (var author in authors)
+            {
+                <option value="@author.Id">@author.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            @(editingBookId == null ? "Add Book" : "Update Book")
+        </button>
+        @if (editingBookId != null)
+        {
+            <button type="button" @onclick="CancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+        }
+    </div>
+</EditForm>
+
+<!-- Filter -->
+<div class="mb-4 max-w-md mx-auto">
+    <input @bind="filter" @bind:event="oninput" placeholder="Filter books by title or ISBN..." class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+</div>
+
+<!-- Book List -->
+<div class="grid gap-4 max-w-2xl mx-auto">
+    @foreach (var book in books)
+    {
+        <BookItem Book="book" OnEdit="EditBook" OnDelete="DeleteBook" />
+    }
+</div>

@@ -1,0 +1,64 @@
+﻿@page "/borrowrecords"
+@using LibraryManagementApp.Application.DTOs
+@using LibraryManagementApp.Application.Interfaces
+@inject IBorrowRecordService BorrowRecordService
+@inject IBookService BookService
+@inject IJSRuntime JS
+
+<h1 class="text-3xl font-bold mb-6 text-center">Manage Borrow Records</h1>
+
+<!-- Borrow Record Form -->
+<EditForm Model="newRecord" OnValidSubmit="AddOrUpdateRecord" class="mb-8 max-w-md mx-auto">
+    <DataAnnotationsValidator />
+    <div class="mb-4">
+        <label for="book" class="block text-sm font-medium text-gray-700">Book</label>
+        <InputSelect id="book" @bind-Value="newRecord.BookId" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="0">Select book</option>
+            @foreach (var book in books)
+            {
+                <option value="@book.Id">@book.Title</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="mb-4">
+        <label for="borrower" class="block text-sm font-medium text-gray-700">Borrower Name</label>
+        <InputText id="borrower" @bind-Value="newRecord.BorrowerName" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter borrower name" />
+        <ValidationMessage For="() => newRecord.BorrowerName" class="text-red-500 text-sm mt-1" />
+    </div>
+    <div class="mb-4">
+        <label for="borrowDate" class="block text-sm font-medium text-gray-700">Borrow Date</label>
+        <InputDate id="borrowDate" @bind-Value="newRecord.BorrowDate" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div class="mb-4">
+        <label for="returnDate" class="block text-sm font-medium text-gray-700">Return Date (Optional)</label>
+        <InputDate id="returnDate" @bind-Value="newRecord.ReturnDate" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            @(editingRecordId == null ? "Add Record" : "Update Record")
+        </button>
+        @if (editingRecordId != null)
+        {
+            <button type="button" @onclick="CancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+        }
+    </div>
+</EditForm>
+
+<!-- Borrow Record List -->
+<div class="grid gap-4 max-w-2xl mx-auto">
+    @foreach (var record in borrowRecords)
+    {
+        <div class="p-4 border rounded shadow-sm flex justify-between items-center @(record.ReturnDate.HasValue ? "bg-green-100" : "bg-white")">
+            <div>
+                <h3 class="text-lg font-semibold">@record.BookTitle</h3>
+                <p class="text-gray-600">Borrower: @record.BorrowerName</p>
+                <p class="text-sm text-gray-500">Borrowed: @record.BorrowDate.ToString("MMM dd, yyyy")</p>
+                <p class="text-sm text-gray-500">Returned: @(record.ReturnDate?.ToString("MMM dd, yyyy") ?? "Not returned")</p>
+            </div>
+            <div class="flex gap-2">
+                <button @onclick="() => EditRecord(record)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                <button @onclick="() => DeleteRecord(record.Id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+            </div>
+        </div>
+    }
+</div>

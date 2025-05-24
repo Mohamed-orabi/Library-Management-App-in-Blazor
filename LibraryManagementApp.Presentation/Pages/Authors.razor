@@ -1,0 +1,52 @@
+﻿@page "/authors"
+@using LibraryManagementApp.Application.DTOs
+@using LibraryManagementApp.Application.Interfaces
+@inject IAuthorService AuthorService
+@inject IJSRuntime JS
+
+<h1 class="text-3xl font-bold mb-6 text-center">Manage Authors</h1>
+
+<!-- Author Form -->
+<EditForm Model="newAuthor" OnValidSubmit="AddOrUpdateAuthor" class="mb-8 max-w-md mx-auto">
+    <DataAnnotationsValidator />
+    <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <InputText id="name" @bind-Value="newAuthor.Name" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter author name" />
+        <ValidationMessage For="() => newAuthor.Name" class="text-red-500 text-sm mt-1" />
+    </div>
+    <div class="mb-4">
+        <label for="birthDate" class="block text-sm font-medium text-gray-700">Birth Date</label>
+        <InputDate id="birthDate" @bind-Value="newAuthor.BirthDate" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            @(editingAuthorId == null ? "Add Author" : "Update Author")
+        </button>
+        @if (editingAuthorId != null)
+        {
+            <button type="button" @onclick="CancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+        }
+    </div>
+</EditForm>
+
+<!-- Filter -->
+<div class="mb-4 max-w-md mx-auto">
+    <input @bind="filter" @bind:event="oninput" placeholder="Filter authors by name..." class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+</div>
+
+<!-- Author List -->
+<div class="grid gap-4 max-w-2xl mx-auto">
+    @foreach (var author in authors)
+    {
+        <div class="p-4 border rounded shadow-sm flex justify-between items-center bg-white">
+            <div>
+                <h3 class="text-lg font-semibold">@author.Name</h3>
+                <p class="text-gray-600">Born: @author.BirthDate.ToString("MMM dd, yyyy")</p>
+            </div>
+            <div class="flex gap-2">
+                <button @onclick="() => EditAuthor(author)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                <button @onclick="() => DeleteAuthor(author.Id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+            </div>
+        </div>
+    }
+</div>

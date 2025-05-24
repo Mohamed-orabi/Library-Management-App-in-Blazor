@@ -1,0 +1,40 @@
+﻿@page "/categories"
+@using LibraryManagementApp.Application.DTOs
+@using LibraryManagementApp.Application.Interfaces
+@inject ICategoryService CategoryService
+@inject IJSRuntime JS
+
+<h1 class="text-3xl font-bold mb-6 text-center">Manage Categories</h1>
+
+<!-- Category Form -->
+<EditForm Model="newCategory" OnValidSubmit="AddOrUpdateCategory" class="mb-8 max-w-md mx-auto">
+    <DataAnnotationsValidator />
+    <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <InputText id="name" @bind-Value="newCategory.Name" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter category name" />
+        <ValidationMessage For="() => newCategory.Name" class="text-red-500 text-sm mt-1" />
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            @(editingCategoryId == null ? "Add Category" : "Update Category")
+        </button>
+        @if (editingCategoryId != null)
+        {
+            <button type="button" @onclick="CancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+        }
+    </div>
+</EditForm>
+
+<!-- Category List -->
+<div class="grid gap-4 max-w-2xl mx-auto">
+    @foreach (var category in categories)
+    {
+        <div class="p-4 border rounded shadow-sm flex justify-between items-center bg-white">
+            <h3 class="text-lg font-semibold">@category.Name</h3>
+            <div class="flex gap-2">
+                <button @onclick="() => EditCategory(category)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                <button @onclick="() => DeleteCategory(category.Id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+            </div>
+        </div>
+    }
+</div>
