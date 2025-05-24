@@ -37,12 +37,12 @@
     </div>
     <div class="mb-4">
         <label for="authors" class="block text-sm font-medium text-gray-700">Authors</label>
-        <InputSelect multiple @bind-Value="newBook.AuthorId" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select multiple @onchange="HandleAuthorSelection" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
             @foreach (var author in authors)
             {
                 <option value="@author.Id">@author.Name</option>
             }
-        </InputSelect>
+        </select>
     </div>
     <div class="flex gap-2">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">

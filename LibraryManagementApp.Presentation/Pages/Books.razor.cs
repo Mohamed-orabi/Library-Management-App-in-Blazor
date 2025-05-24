@@ -1,4 +1,5 @@
 ﻿using LibraryManagementApp.Application.DTOs;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace LibraryManagementApp.Presentation.Pages
@@ -74,6 +75,13 @@ namespace LibraryManagementApp.Presentation.Pages
         {
             newBook = new BookDto { PublicationDate = DateTime.Today };
             editingBookId = null;
+        }
+
+        private void HandleAuthorSelection(ChangeEventArgs e)
+        {
+            newBook.AuthorIds = (e.Value as IEnumerable<string>)
+                               .Select(int.Parse)
+                               .ToList();
         }
     }
 }
