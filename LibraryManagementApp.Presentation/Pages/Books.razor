@@ -37,7 +37,7 @@
     </div>
     <div class="mb-4">
         <label for="authors" class="block text-sm font-medium text-gray-700">Authors</label>
-        <InputSelect multiple @bind-Value="newBook.AuthorIds" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <InputSelect multiple @bind-Value="newBook.AuthorId" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
             @foreach (var author in authors)
             {
                 <option value="@author.Id">@author.Name</option>
